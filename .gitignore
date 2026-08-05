@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+
+# Scratch cache used by scripts/vendor-frames.mjs to avoid refetching from R2.
+# The frames themselves live in public/r2proxy/ and ARE committed, so CI needs
+# no network access to build the hero sequence.
+.r2cache/
+
+.DS_Store
+*.log

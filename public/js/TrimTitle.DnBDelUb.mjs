@@ -1,0 +1,2 @@
+import{t as e}from"./rolldown-runtime.CMAw1HyY.mjs";import{E as t,M as n,l as r,s as i}from"./react.CI8P-fjo.mjs";import{$ as a,c as o}from"./framer.Wxc585TD.mjs";function s(e){return t=>(n(o),r(e,{...t,...c(t)}))}var c,l=e((()=>{i(),t(),a(),c=e=>{let t=e.title;if(!t||t.length<=53)return{};let n=t.slice(0,53),r=n.lastIndexOf(` `);return r>0&&(n=n.slice(0,r)),{title:`${n}…`}},s.displayName=`TrimTitle`}));export{s as n,l as t};
+//# sourceMappingURL=TrimTitle.DnBDelUb.mjs.map

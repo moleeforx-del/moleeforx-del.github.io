@@ -1,0 +1,68 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow one concurrent deployment; let an in-progress run finish so a
+# half-published site is never left behind.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # BASE_PATH is intentionally unset: this is a <user>.github.io site, so it
+      # is served from the domain root. The Framer bundles request the hero
+      # sequence from /r2proxy/... and only resolve correctly at the root.
+      - run: npm run build
+
+      # Guard the failure mode that is silent in CI but fatal in the browser:
+      # a gap in the zero-indexed frame sequence stalls the intro, which never
+      # releases the scroll lock and leaves the whole page unscrollable.
+      - name: Verify hero frame sequence is complete
+        run: |
+          set -euo pipefail
+          check() {
+            dir="$1"; prefix="$2"; last="$3"
+            for i in $(seq 0 "$last"); do
+              f=$(printf "out/r2proxy/framer/%s/%s%05d.webp" "$dir" "$prefix" "$i")
+              [ -s "$f" ] || { echo "missing or empty frame: $f"; exit 1; }
+            done
+            echo "$dir: $((last + 1)) frames present"
+          }
+          check 1920 floating-island_ 210
+          check mob floating-island-mob_ 209
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
