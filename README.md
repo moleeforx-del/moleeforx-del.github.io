@@ -3,6 +3,14 @@
 The alethia.earth site as a Next.js 16 App Router project, rendering identically
 to the original Framer static export in `..`.
 
+Live: **https://moleeforx-del.github.io/**
+
+Deployed by `.github/workflows/deploy.yml` on every push to `main`. It must be a
+`<user>.github.io` repo, not a project repo: the Framer bundles request the hero
+sequence from `/r2proxy/...` at the **domain root**, so a `/<repo>/` subpath
+404s the whole sequence. `BASE_PATH` exists for hosts that do serve from a
+subpath, but the hero will not work there without editing the bundles.
+
 ```bash
 npm install
 npm run dev     # http://localhost:3100
