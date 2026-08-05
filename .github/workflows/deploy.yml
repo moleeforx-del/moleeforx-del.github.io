@@ -51,6 +51,11 @@ jobs:
           check 1920 floating-island_ 210
           check mob floating-island-mob_ 209
 
+      # Jekyll strips paths beginning with an underscore, which would remove
+      # the entire /_next/ chunk directory and leave an unhydrated page.
+      - name: Disable Jekyll processing
+        run: touch out/.nojekyll
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
